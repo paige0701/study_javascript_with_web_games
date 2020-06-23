@@ -2,10 +2,10 @@ var body = document.body;
 
 var word = document.createElement('div');
 word.textContent = '제로초';
-document.body.append(word);
+body.append(word);
 
 var form = document.createElement('form');
-document.body.append(form);
+body.append(form);
 
 var input = document.createElement('input');
 form.append(input);
