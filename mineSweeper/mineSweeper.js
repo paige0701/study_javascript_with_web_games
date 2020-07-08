@@ -2,6 +2,9 @@ var tbody = document.querySelector('#table tbody');
 var dataset = [];
 
 document.querySelector('#exec').addEventListener('click', (e) => {
+
+    tbody.innerHTML = '';  // 실행하면 초기화 한다.
+
     var hor = parseInt(document.querySelector('#hor').value);
     var ver = parseInt(document.querySelector('#ver').value);
     var mine = parseInt(document.querySelector('#mine').value);
@@ -26,22 +29,33 @@ document.querySelector('#exec').addEventListener('click', (e) => {
         dataset.push(arr);
         var tr = document.createElement('tr');
         for (var j = 0 ; j < hor; j+=1) {
+            arr.push(1)
             var td = document.createElement('td');
             td.addEventListener(('contextmenu'), (e) => {
                 e.preventDefault()
                 var parentTr = e.currentTarget.parentNode;
                 var parentTbody = e.currentTarget.parentNode.parentNode;
                 var 칸 = Array.prototype.indexOf.call(parentTr.children, e.currentTarget);
-                var 줄 = Array.prototype.indexOf.call(parentTbody.children, parentTr)
-                e.currentTarget.textContent = '!';
+                var 줄 = Array.prototype.indexOf.call(parentTbody.children, parentTr);
+
+                if (e.currentTarget.textContent === '' || e.currentTarget.textContent === 'X') {
+                    e.currentTarget.textContent = '!';
+                } else if (e.currentTarget.textContent === '!') {
+                    e.currentTarget.textContent = '?';
+                } else if (e.currentTarget.textContent === '?') {
+
+                    if (dataset[줄][칸] === 'X') {
+                        e.currentTarget.textContent = 'X';
+                    } else {
+                        e.currentTarget.textContent = '';
+                    }
+                }
             })
-            td.textContent = 1;
             tr.appendChild(td)
-            arr.push(1)
         }
         tbody.appendChild(tr)
     }
-    console.info(dataset)
+    console.info(dataset);
 
     // 지뢰심기
     for (var k = 0; k < shuffle.length; k +=1) {
