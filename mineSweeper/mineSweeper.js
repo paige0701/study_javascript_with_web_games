@@ -51,11 +51,36 @@ document.querySelector('#exec').addEventListener('click', (e) => {
                     }
                 }
             })
+            td.addEventListener(('click'), function(e) {
+
+                //클릭했을 때 주변 지뢰 개수
+                var parentTr = e.currentTarget.parentNode;
+                var parentTbody = e.currentTarget.parentNode.parentNode;
+                var 칸 = Array.prototype.indexOf.call(parentTr.children, e.currentTarget);
+                var 줄 = Array.prototype.indexOf.call(parentTbody.children, parentTr);
+
+                if (dataset[줄][칸] === 'X') {
+                    e.currentTarget.textContent = '펑';
+                } else {
+                    var 주변 = [
+                        dataset[줄][칸-1]                    ,dataset[줄][칸+1]
+                    ];
+                    if (dataset[줄-1]) {
+                        주변 = 주변.concat([dataset[줄 - 1][칸 - 1], dataset[줄 - 1][칸], dataset[줄 - 1][칸 + 1]])
+                    }
+                    if (dataset[줄+1]) {
+                        주변 = 주변.concat([dataset[줄+1][칸-1],dataset[줄+1][칸] ,dataset[줄+1][칸+1]])
+                    }
+                    e.currentTarget.textContent =
+                        주변.filter(function(v) {
+                            return v === 'X';
+                    }).length
+                }
+            })
             tr.appendChild(td)
         }
         tbody.appendChild(tr)
     }
-    console.info(dataset);
 
     // 지뢰심기
     for (var k = 0; k < shuffle.length; k +=1) {
