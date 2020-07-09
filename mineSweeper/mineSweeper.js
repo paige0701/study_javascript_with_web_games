@@ -72,10 +72,39 @@ document.querySelector('#exec').addEventListener('click', (e) => {
                     if (dataset[줄+1]) {
                         주변 = 주변.concat([dataset[줄+1][칸-1],dataset[줄+1][칸] ,dataset[줄+1][칸+1]])
                     }
-                    e.currentTarget.textContent =
+                    var 주변지뢰개수 =
                         주변.filter(function(v) {
                             return v === 'X';
-                    }).length
+                    }).length;
+                    e.currentTarget.textContent = 주변지뢰개수;
+                    if (주변지뢰개수 === 0) { // 주변 오픈
+                        var 주변칸 = []
+                        if (tbody.children[줄-1]) {
+                            주변칸 = 주변칸.concat([
+                                tbody.children[줄-1].children[칸-1],
+                                tbody.children[줄-1].children[칸],
+                                tbody.children[줄-1].children[칸+1]
+                            ]);
+                        }
+                        주변칸 = 주변칸.concat([
+                            tbody.children[줄].children[칸-1],
+                            tbody.children[줄].children[칸+1]
+                        ]);
+
+                        if (tbody.children[줄+1]) {
+                            주변칸 = 주변칸.concat([
+                                tbody.children[줄+1].children[칸-1],
+                                tbody.children[줄+1].children[칸],
+                                tbody.children[줄+1].children[칸+1]
+                            ]);
+                        }
+
+                        console.info(주변칸)
+                        // undefined 애들 remove 함 !!v
+                        주변칸.filter((v) => !!v).forEach(function(e) {
+                            e.click();
+                        });
+                    }
                 }
             })
             tr.appendChild(td)
