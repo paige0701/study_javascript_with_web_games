@@ -4,7 +4,7 @@ var dataset = [];
 document.querySelector('#exec').addEventListener('click', (e) => {
 
     tbody.innerHTML = '';  // 실행하면 초기화 한다.
-
+    dataset = []; // 데이터 초기화
     var hor = parseInt(document.querySelector('#hor').value);
     var ver = parseInt(document.querySelector('#ver').value);
     var mine = parseInt(document.querySelector('#mine').value);
@@ -59,6 +59,7 @@ document.querySelector('#exec').addEventListener('click', (e) => {
                 var 칸 = Array.prototype.indexOf.call(parentTr.children, e.currentTarget);
                 var 줄 = Array.prototype.indexOf.call(parentTbody.children, parentTr);
 
+                e.currentTarget.classList.add('opened');
                 if (dataset[줄][칸] === 'X') {
                     e.currentTarget.textContent = '펑';
                 } else {
