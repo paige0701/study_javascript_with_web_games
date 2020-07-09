@@ -1,10 +1,16 @@
 var tbody = document.querySelector('#table tbody');
 var dataset = [];
-
+var res = document.getElementById('result');
+var 중단플래그 = false;
+var 열은칸 = 0;
 document.querySelector('#exec').addEventListener('click', (e) => {
 
     tbody.innerHTML = '';  // 실행하면 초기화 한다.
     dataset = []; // 데이터 초기화
+    res.textContent = '';
+    중단플래그 = false;
+    열은칸 = 0;
+
     var hor = parseInt(document.querySelector('#hor').value);
     var ver = parseInt(document.querySelector('#ver').value);
     var mine = parseInt(document.querySelector('#mine').value);
@@ -52,6 +58,13 @@ document.querySelector('#exec').addEventListener('click', (e) => {
                 }
             })
             td.addEventListener(('click'), function(e) {
+                if (중단플래그) {
+                    return;
+                }
+
+                if (!e.currentTarget.classList.contains('opened')) {
+                    열은칸 += 1;
+                }
 
                 //클릭했을 때 주변 지뢰 개수
                 var parentTr = e.currentTarget.parentNode;
@@ -61,7 +74,9 @@ document.querySelector('#exec').addEventListener('click', (e) => {
 
                 e.currentTarget.classList.add('opened');
                 if (dataset[줄][칸] === 'X') {
+                    중단플래그 = true;
                     e.currentTarget.textContent = '펑';
+                    res.textContent = 'You lost';
                 } else {
                     var 주변 = [
                         dataset[줄][칸-1]                    ,dataset[줄][칸+1]
@@ -76,7 +91,7 @@ document.querySelector('#exec').addEventListener('click', (e) => {
                         주변.filter(function(v) {
                             return v === 'X';
                     }).length;
-                    e.currentTarget.textContent = 주변지뢰개수;
+                    e.currentTarget.textContent = 주변지뢰개수 || '';
                     if (주변지뢰개수 === 0) { // 주변 오픈
                         var 주변칸 = []
                         if (tbody.children[줄-1]) {
@@ -99,14 +114,19 @@ document.querySelector('#exec').addEventListener('click', (e) => {
                             ]);
                         }
 
-                        console.info(주변칸)
-                        // undefined 애들 remove 함 !!v
+                        // TODO: important !! undefined 애들 remove 함 !!v
                         주변칸.filter((v) => !!v).forEach(function(e) {
-                            e.click();
+                            if (!e.classList.contains('opened')) {
+                                e.click();
+                            }
                         });
                     }
                 }
-            })
+                if (열은칸 === (hor * ver)-mine) {
+                    중단플래그 = true;
+                    res.textContent = '승리';
+                }
+            });
             tr.appendChild(td)
         }
         tbody.appendChild(tr)
@@ -117,7 +137,7 @@ document.querySelector('#exec').addEventListener('click', (e) => {
         var v = Math.floor(shuffle[k] / 10);
         var h = shuffle[k] % 10;
 
-        tbody.children[v].children[h].textContent = 'X'
+        tbody.children[v].children[h].textContent = 'X';
         dataset[v][h] = 'X';
     }
-})
+});
