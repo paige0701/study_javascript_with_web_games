@@ -4,8 +4,55 @@ var 줄들 = [];
 var 칸들 = [];
 var turn = 'X';
 var result = document.createElement('div');
+function 결과체크 (몇줄, 몇칸) {
+    var 다참 = false;
+
+    if (칸들[몇줄][0].textContent === turn &&
+        칸들[몇줄][1].textContent === turn &&
+        칸들[몇줄][2].textContent === turn) {
+        다참 = true
+    }
+
+    if (칸들[0][몇칸].textContent === turn &&
+        칸들[1][몇칸].textContent === turn &&
+        칸들[2][몇칸].textContent === turn) {
+        다참 = true
+    }
+
+    if (몇줄 - 몇칸 === 0) {
+        if (칸들[0][0].textContent === turn &&
+            칸들[1][1].textContent === turn &&
+            칸들[2][2].textContent === turn) {
+            다참 = true
+        }
+    }
+
+    if (Math.abs(몇줄 - 몇칸) === 2) {
+        if (칸들[0][2].textContent === turn &&
+            칸들[1][1].textContent === turn &&
+            칸들[2][0].textContent === turn) {
+            다참 = true
+        }
+    }
+    return 다참
+}
+
+function refresh() {
+    result.textContent = turn + '님의 승리';
+
+    //refresh
+    turn = 'X';
+    칸들.forEach((줄) => {
+        줄.forEach((칸) => {
+            칸.textContent = '';
+        })
+    })
+}
 
 var callBack = function(event) {
+    if (turn === 'O') {
+        return;
+    }
     var 몇줄 = 줄들.indexOf(event.target.parentNode);
     var 몇칸 = 칸들[몇줄].indexOf(event.target);
 
@@ -14,49 +61,31 @@ var callBack = function(event) {
     } else {
         칸들[몇줄][몇칸].textContent = turn;
 
-        var 다참 = false;
-
-        if (칸들[몇줄][0].textContent === turn &&
-            칸들[몇줄][1].textContent === turn &&
-            칸들[몇줄][2].textContent === turn) {
-            다참 = true
-        }
-
-        if (칸들[0][몇칸].textContent === turn &&
-            칸들[1][몇칸].textContent === turn &&
-            칸들[2][몇칸].textContent === turn) {
-            다참 = true
-        }
-
-        if (몇줄 - 몇칸 === 0) {
-            if (칸들[0][0].textContent === turn &&
-                칸들[1][1].textContent === turn &&
-                칸들[2][2].textContent === turn) {
-                다참 = true
-            }
-        }
-
-        if (Math.abs(몇줄 - 몇칸) === 2) {
-            if (칸들[0][2].textContent === turn &&
-                칸들[1][1].textContent === turn &&
-                칸들[2][0].textContent === turn) {
-                다참 = true
-            }
-        }
-
+        var 다참 = 결과체크(몇줄, 몇칸);
 
         if (다참) {
-            result.textContent = turn + '님의 승리';
-
-            //refresh
-            turn = 'X';
-            칸들.forEach((줄) => {
-                줄.forEach((칸) => {
-                    칸.textContent = '';
-                })
-            })
+            refresh();
         } else {
-            turn = turn === 'X' ? 'O' : 'X'
+            setTimeout(() => {
+                console.log('컴퓨터의 턴입니다');
+                turn = '0';
+                var candidates = [];
+                칸들.forEach((줄) => {
+                    줄.forEach((칸) => {
+                        candidates.push(칸);
+                    })
+                });
+                candidates = candidates.filter((칸) => {
+                    return !칸.textContent
+                });
+                var selected = candidates[Math.floor(Math.random() * candidates.length)];
+                selected.textContent = turn;
+                var 다참 = 결과체크(몇줄, 몇칸);
+                if (다참) {
+                    refresh();
+                }
+                turn = 'X';
+            }, 1000)
         }
 
     }
