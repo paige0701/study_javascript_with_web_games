@@ -4,6 +4,11 @@ var 줄들 = [];
 var 칸들 = [];
 var turn = 'X';
 var result = document.createElement('div');
+
+
+function 무승부체크() {
+
+}
 function 결과체크 (몇줄, 몇칸) {
     // 세칸 다 채워졌나?
     var 다참 = false;
@@ -42,16 +47,24 @@ function 결과체크 (몇줄, 몇칸) {
     return 다참;
 }
 
-function refresh() {
-    result.textContent = turn + '님의 승리';
+function refresh(isTie) {
+
+    if (isTie) {
+        result.textContent = '무승부입니다.';
+    } else {
+        result.textContent = turn + '님의 승리';
+    }
 
     //refresh
     turn = 'X';
-    칸들.forEach((줄) => {
-        줄.forEach((칸) => {
-            칸.textContent = '';
-        })
-    })
+    setTimeout(() => {
+        칸들.forEach((줄) => {
+            줄.forEach((칸) => {
+                칸.textContent = '';
+            })
+        });
+        result.textContent = '';
+    }, 1000);
 }
 
 var callBack = function(event) {
@@ -68,24 +81,31 @@ var callBack = function(event) {
 
         var 다참 = 결과체크(몇줄, 몇칸);
 
+        // 칸이 다 찼는지 검사
+        var candidates = [];
+        칸들.forEach((줄) => {
+            줄.forEach((칸) => {
+                candidates.push(칸);
+            })
+        });
+
+        candidates = candidates.filter((칸) => {
+            return !칸.textContent
+        });
+
         if (다참) {
             refresh();
-        } else {
+        } else if (candidates.length === 0) {
+            refresh(true);
+        }
+        else {
             if (turn === 'X') {
                 turn = 'O'
             }
             setTimeout(() => {
                 console.log('컴퓨터의 턴입니다');
                 turn = 'O';
-                var candidates = [];
-                칸들.forEach((줄) => {
-                    줄.forEach((칸) => {
-                        candidates.push(칸);
-                    })
-                });
-                candidates = candidates.filter((칸) => {
-                    return !칸.textContent
-                });
+
                 var selected = candidates[Math.floor(Math.random() * candidates.length)];
                 selected.textContent = turn;
                 var 몇줄 = 줄들.indexOf(selected.parentNode);
