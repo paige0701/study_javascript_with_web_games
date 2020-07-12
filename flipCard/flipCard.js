@@ -1,12 +1,18 @@
 var 가로 = 4;
 var 세로 = 3;
-var 색깔후보 = ['red', 'red', 'orange','orange', 'green','green', 'yellow', 'yellow','white', 'pink', 'white', 'pink'];
+var 색깔들 = ['red', 'red', 'orange','orange', 'green','green', 'yellow', 'yellow','white', 'pink', 'white', 'pink'];
+var 색깔후보 = 색깔들.slice();
 var 색깔 = [];
-for (var i = 0; 색깔후보.length > 0; i++) {
-    색깔 = 색깔.concat(색깔후보.splice(Math.floor(Math.random() * 색깔후보.length), 1))
-}
-var 클릭플래그 = true;
 
+var 클릭플래그 = true;
+var 클릭카드 = [];
+var 완성카드 = [];
+var 시작시간;
+function 셔플() {
+    for (var i = 0; 색깔후보.length > 0; i++) {
+        색깔 = 색깔.concat(색깔후보.splice(Math.floor(Math.random() * 색깔후보.length), 1))
+    }
+}
 function 카드세팅(가로, 세로) {
 
     클릭플래그 = false;
@@ -32,13 +38,45 @@ function 카드세팅(가로, 세로) {
         // closure 문제
         (function(c) {
             card.addEventListener('click', () => {
-                if (클릭플래그) {
+                if (클릭플래그 && !완성카드.includes(c) && !클릭카드.includes(c)) {
                     c.classList.toggle('flipped');
+                    클릭카드.push(c);
+                    if (클릭카드.length === 2) {
+                        var first = 클릭카드[0].querySelector('.card-back').style.backgroundColor;
+                        var second= 클릭카드[1].querySelector('.card-back').style.backgroundColor;
+                        console.info(first, second)
+                        if (first !== second) {
+                            클릭플래그 = false;
+                            setTimeout(() => {
+                                클릭카드[0].classList.remove('flipped');
+                                클릭카드[1].classList.remove('flipped');
+                                클릭플래그 = true;
+                                클릭카드 = [];
+                            }, 1000)
+
+                        } else {
+                            완성카드.push(클릭카드[0]);
+                            완성카드.push(클릭카드[1]);
+                            클릭카드 = [];
+                            if (완성카드.length === (가로*세로)) {
+                                var 끝시간 = new Date();
+                                alert((끝시간- 시작시간)/1000 + '초 걸렸습니다.');
+                                document.querySelector('#wrapper').innerHTML = '';
+                                완성카드 = [];
+                                색깔후보 = 색깔들.slice();
+                                색깔 = [];
+                                시작시간 = null;
+                                셔플();
+                                카드세팅(가로, 세로);
+                            }
+                        }
+
+                    }
                 }
             })
         })(card);
 
-        document.body.appendChild(card)
+        document.querySelector('#wrapper').appendChild(card)
     }
 
     document.querySelectorAll('.card').forEach((card, index) => {
@@ -52,7 +90,9 @@ function 카드세팅(가로, 세로) {
             card.classList.remove('flipped');
         });
         클릭플래그 = true;
+        시작시간 = new Date();
     }, 5000);
 }
 
+셔플();
 카드세팅(가로, 세로);
