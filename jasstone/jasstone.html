@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        #my, #rival {
+            display: inline-block;
+            vertical-align: top;
+            margin-right: 50px;
+        }
+        #my-deck, #rival-deck {
+            display: inline-block;
+            vertical-align: top;
+            width: 200px;
+        }
+        #rival-deck, #rival-cards, #rival-hero, #my-cards, #my-hero, #my-deck {
+            text-align: center;
+        }
+        .card {
+            width: 50px;
+            height: 75px;
+            display: inline-block;
+            position: relative;
+            border: 1px solid black;
+            margin-bottom: 10px;
+        }
+
+        .card-att, .card-hp, .card-cost {
+            font-size: 12px;
+            text-align: center;
+            line-height: 15px;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            display: inline-block;
+            position: absolute;
+            bottom: 0;
+            border: 1px solid black;
+        }
+
+        .card-cost {
+            bottom: auto;
+            top:0;
+            right:0;
+            background-color: blue;
+            color: white;
+        }
+
+        .card-att {
+            left: 0;
+            background-color: yellow;
+
+        }
+
+        .card-hp {
+            right: 0;
+            background-color: red;
+        }
+        
+        .card-name {
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .card-hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<div id="rival">
+    <div id="rival-cost">코스트: <span>10</span></div>
+    <div id="rival-hero">
+    </div>
+    <div id="rival-cards" style="height: 150px">
+    </div>
+</div> 
+<div id="rival-deck">
+    <div>deck</div>
+</div>
+ <hr/>
+
+<div id="my">
+    <div id="my-cards" style="height: 110px"></div>
+    <div id="my-hero"></div>
+    <div id="my-cost">코스트 <span>10</span></div>
+</div>
+<div id="my-deck">
+    <div>Deck</div>
+</div>
+
+<div class="card-hidden">
+    <div class="card">
+        <div class="card-cost"></div>
+        <div class="card-att"></div>
+        <div class="card-hp"></div>
+    </div>
+</div>
+<script src="jasstone.js"></script>
+</body>
+</html>
